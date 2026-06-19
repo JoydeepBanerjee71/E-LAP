@@ -41,7 +41,7 @@ E-LAP is a full-stack loan management and automation platform designed to stream
 | 🏠 Portal Homepage | 📄 KYC Verification |
 | :---: | :---: |
 | ![Homepage](images/portal_homepage.png) | ![KYC Page](images/kyc_page.png) |
-| *Landing layouts* | *File upload* |
+| *Home page* | *File upload* |
 
 ---
 
