@@ -10,7 +10,8 @@ E-LAP is a full-stack loan management and automation platform designed to stream
 
 ---
 
-## ⚡ System Architecture
+<details>
+<summary><h2>⚡ System Architecture</h2></summary>
 
 ```text
   [Client Web UI] (Home, Login, ML Prediction, KYC, Lender Dashboard, Rasa Chatbot)
@@ -21,6 +22,8 @@ E-LAP is a full-stack loan management and automation platform designed to stream
         ├─► [Flask ML Service] ── (StandardScaler + Random Forest API)
         └─► [Rasa NLP Bot] ────── (REST Webhook + Offline Fallback UI)
 ```
+
+</details>
 
 ---
 
@@ -42,7 +45,8 @@ E-LAP is a full-stack loan management and automation platform designed to stream
 
 ---
 
-## 📂 Project Structure
+<details>
+<summary><h2>📂 Project Structure</h2></summary>
 
 ```text
 E-LAP/
@@ -55,6 +59,8 @@ E-LAP/
 ├── Loan_Model/               # ML service: Flask backend & scikit-learn pkl files
 └── rasa_bot/                 # Rasa NLP model domain configurations
 ```
+
+</details>
 
 ---
 
@@ -70,7 +76,8 @@ Trained on **4,000+ financial rows** (CIBIL, assets, income, loan amount, and te
 
 ---
 
-## 🛠️ Installation & Setup
+<details>
+<summary><h2>🛠️ Installation & Setup</h2></summary>
 
 1. **Database Setup**:
    * Create local MySQL schema `loan_system` and configure credentials in root `.env`:
@@ -91,9 +98,12 @@ Trained on **4,000+ financial rows** (CIBIL, assets, income, loan amount, and te
    npm install && pip install -r Loan_Model/requirements.txt
    ```
 
+</details>
+
 ---
 
-## 💻 Running the Application
+<details>
+<summary><h2>💻 Running the Application</h2></summary>
 
 Start all services in separate terminals:
 
@@ -108,6 +118,8 @@ python Loan_Model/app.py
 rasa run --enable-api --cors "*"
 ```
 *Access the portal locally via the Web Gateway port (configured in `.env`).*
+
+</details>
 
 ---
 
