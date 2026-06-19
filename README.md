@@ -6,7 +6,7 @@
 [![Rasa](https://img.shields.io/badge/Rasa-3.x-purple.svg?style=flat-square&logo=rasa)](https://rasa.com/)
 [![MySQL](https://img.shields.io/badge/MySQL-8.x-blue.svg?style=flat-square&logo=mysql)](https://www.mysql.com/)
 
-E-LAP is a full-stack loan management and automation platform designed to streamline manual underwriting workflows. Rather than just predicting eligibility, E-LAP automates key stages of the approval lifecycle—including machine learning eligibility assessment, automated lender matching based on credit score profiles, digital KYC verification, and chatbot-assisted support—reducing overall loan processing time
+E-LAP is a full-stack loan management and automation platform designed to streamline manual underwriting workflows. Rather than just predicting eligibility, E-LAP automates key stages of the approval lifecycle—including machine learning eligibility assessment, automated lender matching based on credit score profiles, digital KYC verification, and chatbot-assisted support—reducing overall loan processing time.
 
 ---
 
@@ -121,4 +121,4 @@ rasa run --enable-api --cors "*"
 
 ## 📄 License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
