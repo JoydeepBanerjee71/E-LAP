@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        // Immediate authentication & authorization check to prevent layout flashing
+        const token = localStorage.getItem('token');
+        const role = localStorage.getItem('role');
+        if (!token || role !== 'lender') {
+            window.location.href = '/login/login.html';
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lender Workspace - E-LAP Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0099ff;
+            --dark-blue: #0a1744;
+            --bg-light: #f4f6fa;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header / Navbar */
+        header {
+            background: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--dark-blue);
+            letter-spacing: -0.5px;
+        }
+
+        .logo span span {
+            color: var(--primary);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f1f5f9;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--dark-blue);
+        }
+
+        .user-profile i {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .logout-btn {
+            background: #fee2e2;
+            color: var(--danger);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Main Dashboard Panel */
+        main {
+            max-width: 1400px;
+            width: 100%;
+            margin: 30px auto;
+            padding: 0 25px;
+            flex-grow: 1;
+        }
+
+        .welcome-section {
+            margin-bottom: 25px;
+        }
+
+        .welcome-section h1 {
+            font-size: 1.8rem;
+            color: var(--dark-blue);
+            font-weight: 700;
+        }
+
+        .welcome-section p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-top: 5px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-info h3 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .stat-info p {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .stat-card.total .stat-icon { background: #e0f2fe; color: #0284c7; }
+        .stat-card.pending .stat-icon { background: #fef3c7; color: #d97706; }
+        .stat-card.approved .stat-icon { background: #d1fae5; color: #059669; }
+        .stat-card.portfolio .stat-icon { background: #f3e8ff; color: #7c3aed; }
+
+        /* Dashboard Table Workspace */
+        .workspace-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+
+        .workspace-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .workspace-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark-blue);
+        }
+
+        .table-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        .search-wrapper input {
+            padding: 8px 16px 8px 36px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            width: 250px;
+            transition: all 0.2s ease;
+        }
+
+        .search-wrapper input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 153, 255, 0.1);
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 16px 24px;
+            font-weight: 600;
+            color: var(--text-light);
+            border-bottom: 1px solid #e2e8f0;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 18px 24px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        tr:hover td {
+            background: #f8fafc;
+        }
+
+        /* User Info Column styling */
+        .borrower-info-col {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .borrower-name-label {
+            font-weight: 600;
+            color: var(--dark-blue);
+            font-size: 0.95rem;
+        }
+
+        .borrower-meta-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .badge.pending { background: #fffbeb; color: #b45309; }
+        .badge.approved { background: #ecfdf5; color: #047857; }
+        .badge.rejected { background: #fef2f2; color: #b91c1c; }
+
+        .cibil-badge {
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+        .cibil-excellent { background: #d1fae5; color: #065f46; }
+        .cibil-good { background: #e0f2fe; color: #075985; }
+        .cibil-average { background: #fffbeb; color: #92400e; }
+        .cibil-poor { background: #fef2f2; color: #991b1b; }
+
+        /* Action Buttons */
+        .action-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn.approve {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .action-btn.approve:hover:not(:disabled) {
+            background: #059669;
+            color: white;
+        }
+
+        .action-btn.reject {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        .action-btn.reject:hover:not(:disabled) {
+            background: #dc2626;
+            color: white;
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Empty State */
+        .empty-state {
+            padding: 50px 20px;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #cbd5e1;
+            margin-bottom: 15px;
+        }
+
+        /* Notification overlay */
+        .notification-toast {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            padding: 16px 24px;
+            background: #ffffff;
+            color: #1e293b;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-left: 5px solid var(--primary);
+            border-radius: 6px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            transform: translateX(130%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .notification-toast.show {
+            transform: translateX(0);
+        }
+
+        /* Footer styling */
+        footer {
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .workspace-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .table-controls {
+                width: 100%;
+            }
+            .search-wrapper {
+                width: 100%;
+            }
+            .search-wrapper input {
+                width: 100%;
+            }
+            td, th {
+                padding: 12px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-handshake-alt" style="color: var(--primary); font-size: 1.8rem;"></i>
+                <span>E-LAP <span>Lenders</span></span>
+            </div>
+            <div class="nav-right">
+                <div class="user-profile" id="userProfileBadge">
+                    <i class="fas fa-user-tie"></i>
+                    <span id="lenderNameDisplay">Loading...</span>
+                </div>
+                <button class="logout-btn" id="logoutButton">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="welcome-section">
+            <h1 id="welcomeHeader">Welcome Back!</h1>
+            <p>Here are your institution's custom borrower matching metrics and loan requests.</p>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-grid">
+            <div class="stat-card total">
+                <div class="stat-info">
+                    <h3>Total Requests</h3>
+                    <p id="statTotal">0</p>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+            </div>
+            <div class="stat-card pending">
+                <div class="stat-info">
+                    <h3>Pending Decisions</h3>
+                    <p id="statPending">0</p>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+            </div>
+            <div class="stat-card approved">
+                <div class="stat-info">
+                    <h3>Approved Loans</h3>
+                    <p id="statApproved">0</p>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+            </div>
+            <div class="stat-card portfolio">
+                <div class="stat-info">
+                    <h3>Portfolio Value</h3>
+                    <p id="statPortfolio">₹0</p>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Applications Table Workspace -->
+        <div class="workspace-card">
+            <div class="workspace-header">
+                <h2>Incoming Loan Applications</h2>
+                <div class="table-controls">
+                    <div class="search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="tableSearch" placeholder="Search by name, type...">
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table id="applicationsTable">
+                    <thead>
+                        <tr>
+                            <th>Application ID</th>
+                            <th>Borrower Details</th>
+                            <th>Credit CIBIL</th>
+                            <th>Loan Offer Metrics</th>
+                            <th>Duration</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="applicationsTableBody">
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 40px; color: var(--text-light);">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 10px; display: block; color: var(--primary);"></i>
+                                Loading borrower application registry...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 E-LAP Financial Underwriting Platform. All lender operations are secure and auditable.</p>
+        </div>
+    </footer>
+
+    <!-- Notification Toast -->
+    <div id="toastNotification" class="notification-toast">
+        <i class="fas fa-info-circle" id="toastIcon" style="font-size: 1.3rem;"></i>
+        <span id="toastMessage">Notification message</span>
+    </div>
+
+    <script src="lender-dashboard.js"></script>
+</body>
+</html>

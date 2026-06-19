@@ -1,0 +1,29 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment Configuration
+.env
+
+# Python Virtual Environments & Packages
+rasa_env/
+env/
+venv/
+ENV/
+*.pyc
+__pycache__/
+.ipynb_checkpoints/
+
+# Rasa Chatbot Cache and Models
+.rasa/
+rasa_bot/.rasa/
+rasa_bot/models/*.tar.gz
+rasa_bot/db/
+
+# Logs and Caches
+*.log
+.eslintcache
+.parcel-cache
+.cache/
